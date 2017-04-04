@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<bean id="A" class="Classa.A">
+		<property name="name" value="黄"></property>
+	</bean>
+	<bean id="B" class="Classa.B">
+		<property name="name" value="黄大大"></property>
+		<property name="a" ref="A"></property>
+	</bean>
+</beans>
