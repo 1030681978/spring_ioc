@@ -1,6 +1,5 @@
 package Config;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +14,7 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
 	
 	public Object getBean(String beanName) {
 		// TODO Auto-generated method stub
-		return null;
+		return context.get(beanName);
 	}
 	//配置信息
 	private Map<String, Bean> config;
@@ -65,6 +64,7 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
 				if(pro.getValue() != null){
 					String value = pro.getValue();
 					String name = pro.getName();
+					
 					//根据属性名称获得注入属性对应的set方法
 					Method setMethod = BeanUtils.GetWriteMethod(beanObj,name);
 					try {
@@ -76,11 +76,24 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
 					}
 				}
 				//2其他bean注入
-				if(pro.getRef() != null){}
+				if(pro.getRef() != null){
+					String name = pro.getName();
+					String ref = pro.getRef();
+					Object beanObj1 = this.getBean(ref);
+					//根据属性名称获得注入属性对应的set方法
+					Method setMethod = BeanUtils.GetWriteMethod(beanObj,name);
+					try {
+						setMethod.invoke(beanObj, beanObj1);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						throw new RuntimeException("Bean的属性"+name+"没有对应的set方法或方法参数不正确"+className);
+					}
+				}
 			}
 		}
 			
-		return null;
+		return beanObj;
 	}
 
 }
